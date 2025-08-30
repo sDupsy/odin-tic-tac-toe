@@ -116,14 +116,21 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
     const playRound = (row, column) => {
         const validMove = board.placeToken(row, column, getActivePlayer().token);
         if (!validMove) {
-            console.log("Invalid Move, Try again!")
-            return;
+            return {status: "invalid"};
         }
 
+        if (checkWin(board.getBoard())) {
+            return { status: "win", winner: getActivePlayer()};
+        }
         
+        const flat = board.getBoard().flat();
+        if (flat.every(cell => cell.getValue() !== 0)) {
+            return { status: "draw"};
+        }
 
+        const lastPlayer = getActivePlayer();
         switchPlayerTurn();
-        printNewRound();
+        return { status: "next", nextPlayer: getActivePlayer(), lastPlayer };
 
         
 
@@ -137,9 +144,10 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
 }
 
 function ScreenController() {
-    const game = GameController();
+    let game = GameController();
     const playerTurnDiv = document.querySelector(".turn");
     const boardDiv = document.querySelector(".board");
+    const restartButton = document.querySelector(".restart")
 
     const updateScreen = () => {
         boardDiv.textContent = "";
@@ -172,15 +180,38 @@ function ScreenController() {
 
         if (isNaN(selectedRow) || isNaN(selectedColumn)) return;
 
-        game.playRound(selectedRow, selectedColumn);
+        const result = game.playRound(selectedRow, selectedColumn);
         updateScreen();
 
-        if (game.checkWin(game.getBoard())) {
-            playerTurnDiv.textContent = `${game.getActivePlayer().name} wins!`;
+        if (result.status === "invalid") {
+            playerTurnDiv.textContent = "Invalid move, try again!"
+            return;
+        }
+
+        if (result.status === "win") {
+            playerTurnDiv.textContent = `${result.winner.name} wins!`
             boardDiv.removeEventListener("click", clickHandlerBoard);
+            return;
+        }
+
+        if (result.status === "draw") {
+            playerTurnDiv.textContent = "It's a draw!";
+            boardDiv.removeEventListener("click", clickHandlerBoard);
+            return;
+            }
+
+        
     }
+
+    function restartGame(e) {
+        game = GameController();
+        boardDiv.removeEventListener("click", clickHandlerBoard);
+        boardDiv.addEventListener("click", clickHandlerBoard);
+        updateScreen();
     }
+
     boardDiv.addEventListener("click", clickHandlerBoard);
+    restartButton.addEventListener("click", restartGame);
 
     updateScreen();
 }

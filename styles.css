@@ -4,10 +4,9 @@
   width: 500px;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  border: 1px solid black;
-  gap: 2px;
+  gap: 16px;
   padding: 2px;
-  background-color: yellow;
+  background-color: lightgray;
 }
 
 .cell {
@@ -17,6 +16,44 @@
   text-align: center;
   font-size: 2rem;
   border: 1px solid grey;
-  background: lightyellow;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.699);
   cursor: pointer;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
+}
+
+button.cell {
+  color: white;
+  font-size: 100px;
+  font-weight: bold;
+}
+
+.container {
+  font-size: 1.5em;
+}
+
+.restart {
+  margin-top: 16px;
+  font-size: 1.5em;
+  padding: 16px;
+  border-style: none;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.699);
+  color: white;
+  font-weight: bold;
+}
+
+.restart:hover {
+  cursor: pointer;
+}
+
+.restart:active {
+  transform: translateY(2px);
 }
